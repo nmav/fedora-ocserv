@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ "$REASON" = "connect" ];then
+	# add the user's interface into the internal zone
+	firewall-cmd --zone=internal --add-interface=$DEVICE
+else
+	firewall-cmd --zone=internal --remove-interface=$DEVICE
+fi
+
+exit 0

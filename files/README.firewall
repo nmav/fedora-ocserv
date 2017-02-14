@@ -1,0 +1,5 @@
+For ocserv to be usable in Fedora/EPEL the server's
+TCP and UDP ports must be enabled from the firewall (firewall-config),
+
+The interfaces of newly connecting clients will be handled
+by network-manager.
