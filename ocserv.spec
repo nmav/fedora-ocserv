@@ -9,8 +9,8 @@
 %endif
 
 Name:		ocserv
-Version:	0.11.6
-Release:	4%{?dist}
+Version:	0.11.8
+Release:	1%{?dist}
 Summary:	OpenConnect SSL VPN server
 
 # For a breakdown of the licensing, see PACKAGE-LICENSING 
@@ -45,7 +45,6 @@ BuildRequires:	protobuf-c-devel
 BuildRequires:	libnl3-devel
 BuildRequires:	krb5-devel
 BuildRequires:	libtasn1-devel
-BuildRequires:	readline-devel
 BuildRequires:	gperf
 BuildRequires:	pcllib-devel
 BuildRequires:	libtalloc-devel
@@ -55,6 +54,8 @@ BuildRequires:	tcp_wrappers-devel
 BuildRequires:	automake, autoconf
 BuildRequires:	radcli-devel
 BuildRequires:	lz4-devel
+BuildRequires:	readline-devel
+BuildRequires:	GeoIP-devel
 
 %if %{use_systemd}
 BuildRequires:	systemd
