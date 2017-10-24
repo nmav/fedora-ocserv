@@ -41,7 +41,15 @@ BuildRequires:	gnutls-devel
 BuildRequires:	pam-devel
 BuildRequires:	iproute
 
+%if 0%{?rhel} && 0%{?rhel} == 7
+%ifnarch ppc64
 BuildRequires:	protobuf-c-devel
+%endif
+%else
+
+BuildRequires:	protobuf-c-devel
+%endif
+
 BuildRequires:	libnl3-devel
 BuildRequires:	krb5-devel
 BuildRequires:	libtasn1-devel
