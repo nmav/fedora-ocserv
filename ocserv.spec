@@ -8,6 +8,12 @@
 %define have_gpgv2 0
 %endif
 
+%if 0%{?fedora} >= 28 || 0%{?rhel} > 7
+%define use_libwrap 0
+%else
+%define use_libwrap 1
+%endif
+
 Name:		ocserv
 Version:	0.11.8
 Release:	1%{?dist}
@@ -143,12 +149,21 @@ export LIBGNUTLS_LIBS="-L%{_libdir}/gnutls30/ -lgnutls"
 export CFLAGS="$CFLAGS -I/usr/include/libev -I/usr/include/gnutls30"
 sed -i 's/AM_PROG_AR//g' configure.ac
 autoreconf -fvi
+%endif
+
 %configure \
-	--disable-systemd \
-	--enable-local-libopts
+%if %{use_systemd}
+	--enable-systemd \
 %else
-%configure \
-	--enable-systemd
+	--disable-systemd \
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 6
+	--enable-local-libopts \
+%endif
+%if %{use_libwrap}
+	--with-libwrap
+%else
+	--without-libwrap
 %endif
 
 make #%{?_smp_mflags}
