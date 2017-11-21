@@ -14,6 +14,13 @@
 %define use_libwrap 1
 %endif
 
+%define use_local_protobuf 0
+%if 0%{?rhel} && 0%{?rhel} == 7
+%ifarch ppc64
+%define use_local_protobuf 1
+%endif
+%endif
+
 Name:		ocserv
 Version:	0.11.8
 Release:	1%{?dist}
@@ -47,12 +54,7 @@ BuildRequires:	gnutls-devel
 BuildRequires:	pam-devel
 BuildRequires:	iproute
 
-%if 0%{?rhel} && 0%{?rhel} == 7
-%ifnarch ppc64
-BuildRequires:	protobuf-c-devel
-%endif
-%else
-
+%if (0%{?use_local_protobuf} == 0)
 BuildRequires:	protobuf-c-devel
 %endif
 
@@ -124,7 +126,10 @@ gpgv2 --keyring %{SOURCE2} %{SOURCE1} %{SOURCE0} || gpgv2 --keyring %{SOURCE10} 
 %setup -q
 
 rm -f src/http-parser/http_parser.c src/http-parser/http_parser.h
+%if (0%{?use_local_protobuf} == 0)
 rm -rf src/protobuf/protobuf-c/
+touch src/*.proto
+%endif
 rm -rf src/ccan/talloc
 rm -f src/pcl/*.c src/pcl/*.h
 sed -i 's|/etc/ocserv.conf|/etc/ocserv/ocserv.conf|g' src/config.c
@@ -132,7 +137,6 @@ sed -i 's/run-as-group = nogroup/run-as-group = nobody/g' tests/data/*.config
 # GPLv3 in headers is a gnulib bug: 
 # http://lists.gnu.org/archive/html/bug-gnulib/2013-11/msg00062.html
 sed -i 's/either version 3 of the License/either version 2 of the License/g' build-aux/snippet/*
-touch src/*.proto
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
 echo "int main() { return 77; }" > tests/valid-hostname.c
@@ -159,6 +163,9 @@ autoreconf -fvi
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 6
 	--enable-local-libopts \
+%endif
+%if %{use_local_protobuf}
+	--without-protobuf \
 %endif
 %if %{use_libwrap}
 	--with-libwrap
