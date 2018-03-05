@@ -44,7 +44,6 @@ Source11:	ocserv.init
 
 # Taken from upstream:
 # http://git.infradead.org/ocserv.git/commitdiff/7d70006a2dbddf783213f1856374bacc74217e09
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
 BuildRequires:	gnutls30-devel
@@ -66,7 +65,9 @@ BuildRequires:	pcllib-devel
 BuildRequires:	libtalloc-devel
 BuildRequires:	libev-devel
 BuildRequires:	http-parser-devel
+%if %{use_libwrap}
 BuildRequires:	tcp_wrappers-devel
+%endif
 BuildRequires:	automake, autoconf
 BuildRequires:	radcli-devel
 BuildRequires:	lz4-devel
@@ -81,6 +82,7 @@ BuildRequires:	autogen
 BuildRequires:	liboath-devel
 BuildRequires:	uid_wrapper
 BuildRequires:	socket_wrapper
+BuildRequires:	gnupg2
 
 %if 0%{?rhel} && 0%{?rhel} >= 7
 %ifarch x86_64 %{ix86}
@@ -229,9 +231,6 @@ install -D -m 0755 %{SOURCE11} %{buildroot}/%{_initrddir}/%{name}
 %endif
 
 %make_install
-
-%clean
-rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
