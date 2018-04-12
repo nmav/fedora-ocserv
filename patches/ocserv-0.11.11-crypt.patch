@@ -1,0 +1,65 @@
+From cf9cda99a5caf8fabd547f25a962b96a46e13957 Mon Sep 17 00:00:00 2001
+From: Nikos Mavrogiannopoulos <nmav@redhat.com>
+Date: Thu, 12 Apr 2018 14:58:59 +0200
+Subject: [PATCH] include crypt.h to use crypt()
+
+This is necessary in Fedora28 as it doesn't provide
+crypt() prototype in unistd.h
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1566464
+
+Signed-off-by: Nikos Mavrogiannopoulos <nmav@redhat.com>
+---
+ configure.ac            | 2 +-
+ src/auth/plain.c        | 5 +++++
+ src/ocpasswd/ocpasswd.c | 5 +++++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 71c27564..c03d8e7b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -319,7 +319,7 @@ AC_CHECK_MEMBER([struct sockaddr.sa_len],
+ #include <sys/socket.h>
+ ])
+ 
+-AC_CHECK_HEADERS([net/if_tun.h linux/if_tun.h netinet/in_systm.h], [], [], [])
++AC_CHECK_HEADERS([net/if_tun.h linux/if_tun.h netinet/in_systm.h crypt.h], [], [], [])
+ 
+ AC_CHECK_FUNCS([setproctitle vasprintf clock_gettime isatty pselect ppoll getpeereid sigaltstack])
+ AC_CHECK_FUNCS([strlcpy posix_memalign malloc_trim strsep])
+diff --git a/src/auth/plain.c b/src/auth/plain.c
+index 2052e07d..f9c7b1b1 100644
+--- a/src/auth/plain.c
++++ b/src/auth/plain.c
+@@ -37,6 +37,11 @@
+ #ifdef HAVE_LIBOATH
+ # include <liboath/oath.h>
+ #endif
++#ifdef HAVE_CRYPT_H
++  /* libcrypt in Fedora28 does not provide prototype
++   * in unistd.h */
++# include <crypt.h>
++#endif
+ 
+ #define MAX_CPASS_SIZE 128
+ #define HOTP_WINDOW 20
+diff --git a/src/ocpasswd/ocpasswd.c b/src/ocpasswd/ocpasswd.c
+index de3b8396..abb66744 100644
+--- a/src/ocpasswd/ocpasswd.c
++++ b/src/ocpasswd/ocpasswd.c
+@@ -32,6 +32,11 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include "ocpasswd-args.h"
++#ifdef HAVE_CRYPT_H
++  /* libcrypt in Fedora28 does not provide prototype
++   * in unistd.h */
++# include <crypt.h>
++#endif
+ 
+ /* Gnulib portability files. */
+ #include <getpass.h>
+-- 
+2.14.3
+
