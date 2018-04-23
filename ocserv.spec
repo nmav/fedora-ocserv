@@ -15,11 +15,6 @@
 %endif
 
 %define use_local_protobuf 0
-%if 0%{?rhel} && 0%{?rhel} == 7
-%ifarch ppc64
-%define use_local_protobuf 1
-%endif
-%endif
 
 Name:		ocserv
 Version:	0.11.8
@@ -77,8 +72,6 @@ BuildRequires:	GeoIP-devel
 %if %{use_systemd}
 BuildRequires:	systemd
 BuildRequires:	systemd-devel
-BuildRequires:	autogen-libopts-devel
-BuildRequires:	autogen
 BuildRequires:	liboath-devel
 BuildRequires:	uid_wrapper
 BuildRequires:	socket_wrapper
@@ -95,6 +88,11 @@ BuildRequires:	libseccomp-devel
 %endif
 
 %endif #use systemd
+
+# no rubygem in epel7
+%if 0%{?fedora} || 0%{?rhel} > 7
+BuildRequires:	rubygem(ronn)
+%endif
 
 Requires:		gnutls-utils
 Requires:		iproute
@@ -125,7 +123,8 @@ to provide the secure VPN service.
 %if %{have_gpgv2}
 gpgv2 --keyring %{SOURCE2} %{SOURCE1} %{SOURCE0} || gpgv2 --keyring %{SOURCE10} %{SOURCE1} %{SOURCE0}
 %endif
-%setup -q
+
+%autosetup -p1
 
 rm -f src/http-parser/http_parser.c src/http-parser/http_parser.h
 %if (0%{?use_local_protobuf} == 0)
@@ -142,9 +141,9 @@ sed -i 's/either version 3 of the License/either version 2 of the License/g' bui
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
 echo "int main() { return 77; }" > tests/valid-hostname.c
-%else
-rm -f libopts/*.c libopts/*.h libopts/*/*.c libopts/*/*.h
 %endif
+
+chmod 755 tests/server-cert-rsa-pss
 
 %build
 
@@ -162,9 +161,6 @@ autoreconf -fvi
 	--enable-systemd \
 %else
 	--disable-systemd \
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 6
-	--enable-local-libopts \
 %endif
 %if %{use_local_protobuf}
 	--without-protobuf \
@@ -243,9 +239,14 @@ install -D -m 0755 %{SOURCE11} %{buildroot}/%{_initrddir}/%{name}
 
 %doc AUTHORS ChangeLog NEWS COPYING LICENSE README.md TODO PACKAGE-LICENSING
 %doc src/ccan/licenses/CC0 src/ccan/licenses/LGPL-2.1 src/ccan/licenses/BSD-MIT
+
+## Temporarily disable when rubygem is not present; there is a bug in 0.12.0 dist
+%if 0%{?fedora} || 0%{?rhel} > 7
 %{_mandir}/man8/ocserv.8*
 %{_mandir}/man8/occtl.8*
 %{_mandir}/man8/ocpasswd.8*
+%endif
+
 %{_bindir}/ocpasswd
 %{_bindir}/occtl
 %{_bindir}/ocserv-fw
