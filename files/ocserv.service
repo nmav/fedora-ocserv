@@ -7,10 +7,10 @@ After=dbus.service
 
 [Service]
 PrivateTmp=true
-Type=forking
+Type=simple
 PIDFile=/var/run/ocserv.pid
 ExecStartPre=/usr/sbin/ocserv-genkey
-ExecStart=/usr/sbin/ocserv --pid-file /var/run/ocserv.pid --config /etc/ocserv/ocserv.conf
+ExecStart=/usr/sbin/ocserv --pid-file /var/run/ocserv.pid --config /etc/ocserv/ocserv.conf -f
 ExecReload=/bin/kill -HUP $MAINPID
 
 [Install]
