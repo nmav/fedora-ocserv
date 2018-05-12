@@ -16,7 +16,7 @@ RELEASE_SRPM_DIR=$PWD/_release/srpm
 RELEASE_SOURCE=$PWD/_release/source
 RELEASE_DEBIAN_REPO=$PWD/_release/debian-apt
 TOOLS_DIR=$PWD
-SCRIPTS_DIR=/home/nmavrogi/cvs/cockpituous-mine/release
+SCRIPTS_DIR=/home/nmav/cvs/cockpituous/release
 
 #rm -rf $RELEASE_SOURCE
 mkdir -p $RELEASE_SOURCE
@@ -59,8 +59,8 @@ RELEASE_SRPM=$(ls $RELEASE_SRPM_DIR/$PACKAGE-*.src.rpm)
 # Do fedora builds for the tag, using tarball
 $SCRIPTS_DIR/release-koji -v -p $RELEASE_SRPM master
 $SCRIPTS_DIR/release-koji -v -p $RELEASE_SRPM f28
-$SCRIPTS_DIR/release-koji -v -p $RELEASE_SRPM el6
 $SCRIPTS_DIR/release-koji -v -p $RELEASE_SRPM epel7
+$SCRIPTS_DIR/release-koji -v -p $RELEASE_SRPM el6
 
 export RELEASE_SRPM
 $SCRIPTS_DIR/release-bodhi f28

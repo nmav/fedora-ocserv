@@ -143,8 +143,6 @@ sed -i 's/either version 3 of the License/either version 2 of the License/g' bui
 echo "int main() { return 77; }" > tests/valid-hostname.c
 %endif
 
-chmod 755 tests/server-cert-rsa-pss
-
 %build
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
@@ -240,12 +238,9 @@ install -D -m 0755 %{SOURCE11} %{buildroot}/%{_initrddir}/%{name}
 %doc AUTHORS ChangeLog NEWS COPYING LICENSE README.md TODO PACKAGE-LICENSING
 %doc src/ccan/licenses/CC0 src/ccan/licenses/LGPL-2.1 src/ccan/licenses/BSD-MIT
 
-## Temporarily disable when rubygem is not present; there is a bug in 0.12.0 dist
-%if 0%{?fedora} || 0%{?rhel} > 7
 %{_mandir}/man8/ocserv.8*
 %{_mandir}/man8/occtl.8*
 %{_mandir}/man8/ocpasswd.8*
-%endif
 
 %{_bindir}/ocpasswd
 %{_bindir}/occtl
