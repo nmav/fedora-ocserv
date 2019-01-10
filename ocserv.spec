@@ -40,6 +40,7 @@ Source11:	ocserv.init
 # Taken from upstream:
 # http://git.infradead.org/ocserv.git/commitdiff/7d70006a2dbddf783213f1856374bacc74217e09
 
+BuildRequires:	gcc
 %if 0%{?rhel} && 0%{?rhel} <= 6
 BuildRequires:	gnutls30-devel
 %else
